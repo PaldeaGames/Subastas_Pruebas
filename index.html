@@ -333,22 +333,40 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* ════════════════════════════
    WINNER BANNER
 ════════════════════════════ */
+/* ════════════════════════════
+   ZONA FINAL + WINNER BANNER COMPACTO
+   Subasta finalizada (izq) + Contactar al ganador (der).
+   En celular van apiladas; si solo una está visible, ocupa todo el ancho.
+════════════════════════════ */
+#final-zona{ display:grid; grid-template-columns:minmax(0,1fr); align-items:start; }
+@media(min-width:900px){
+  #final-zona{ grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; grid-column:1 / -1; }
+}
 .winner-wrap{
   display:none;background:linear-gradient(135deg,#1a1200,#0d0a00);
-  border:2px solid var(--gold);border-radius:16px;
-  padding:24px 20px;text-align:center;margin-bottom:12px;
+  border:1.5px solid var(--gold);border-radius:14px;
+  padding:13px 15px;margin-bottom:12px;
   animation:fadeSlide .5s ease;
 }
-.winner-trophy{font-size:52px;margin-bottom:10px;animation:float 2s ease-in-out infinite}
+.winner-head{display:flex;align-items:center;gap:10px}
+.winner-trophy{font-size:24px;line-height:1;animation:float 2s ease-in-out infinite;flex-shrink:0}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.winner-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--gold);margin-bottom:10px}
-.winner-name{font-size:17px;font-weight:700;margin-bottom:2px}
-.winner-ig{font-size:13px;color:var(--muted2);margin-bottom:10px}
-.winner-price{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--gold);margin-bottom:8px}
-.winner-ts{font-size:11px;color:var(--muted2)}
+.winner-head-txt{flex:1;min-width:0}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--gold);line-height:1.1}
+.winner-ts{font-size:10px;color:var(--muted2);margin-top:2px}
+.winner-price{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0}
+.winner-body{display:flex;align-items:center;gap:10px;margin-top:9px}
+#w-carta-img{width:44px;height:62px;object-fit:cover;border-radius:6px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.winner-datos{flex:1;min-width:0}
+.winner-name{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.winner-ig{font-size:11px;color:var(--muted2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
 .winner-msg{
-  margin-top:14px;background:var(--s2);border-radius:10px;padding:12px;
-  font-size:12px;color:var(--muted2);line-height:1.6;text-align:left;
+  margin-top:10px;background:var(--s2);border-radius:9px;padding:9px 11px;
+  font-size:11px;color:var(--muted2);line-height:1.55;text-align:left;
+}
+@media(max-width:400px){
+  .winner-title{font-size:15px;letter-spacing:1.5px}
+  .winner-price{font-size:18px}
 }
 
 /* ════════════════════════════
@@ -683,7 +701,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     padding:18px 22px 0;
   }
   .aviso-reingreso{ grid-column:1 / -1; }
-  .winner-wrap{ grid-column:1 / -1; }
   .gallery-section{ grid-column:1; grid-row:span 3; margin-bottom:0; }
   .live-bar{ grid-column:2; }
   #fin-bar{ grid-column:2; }
@@ -1685,79 +1702,84 @@ body.express-tema #login-live-panel{
     <!-- CINTA SUBASTA EXPRESS (solo modo express) -->
     <div id="express-cinta">⚡ SUBASTA EXPRESS · ¡RÁPIDA! ⚡</div>
 
+    <!-- ZONA FINAL: subasta finalizada (izq) + contactar al ganador (der) -->
+    <div id="final-zona">
+
+      <!-- WINNER (compacto) -->
+      <div class="winner-wrap" id="winner-wrap">
+        <div class="winner-head">
+          <div class="winner-trophy">🏆</div>
+          <div class="winner-head-txt">
+            <div class="winner-title">SUBASTA FINALIZADA</div>
+            <div class="winner-ts" id="w-ts">—</div>
+          </div>
+          <div class="winner-price" id="w-price">$0</div>
+        </div>
+        <div class="winner-body">
+          <img id="w-carta-img" src="" alt="" style="display:none">
+          <div class="winner-datos">
+            <div class="winner-name" id="w-name">—</div>
+            <div class="winner-ig" id="w-ig">—</div>
+          </div>
+        </div>
+        <div class="winner-msg" id="w-msg"></div>
+      </div>
+
+      <!-- CONTACTO DEL GANADOR (solo admin) -->
+      <div id="admin-ganador-box" style="display:none;background:linear-gradient(135deg,rgba(245,200,66,.1),rgba(245,200,66,.02));border:1.5px solid var(--gold);border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+          <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">🏆 Contactar al ganador</div>
+          <div id="ag-estado" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px"></div>
+        </div>
+
+        <!-- Ganador: nombre, correo y monto -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+          <div style="min-width:0;flex:1">
+            <div id="ag-nombre" style="font-size:15px;font-weight:700">—</div>
+            <div style="display:flex;align-items:center;gap:6px;min-width:0">
+              <div id="ag-email" style="font-size:11px;color:var(--muted2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">—</div>
+              <button onclick="copiarContacto(document.getElementById('ag-email').textContent.trim())" title="Copiar correo" style="background:none;border:1px solid var(--border);color:var(--muted2);padding:2px 7px;border-radius:5px;font-size:10px;cursor:pointer;font-family:'Outfit',sans-serif;flex-shrink:0">📋</button>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--gold)" id="ag-monto">$0</div>
+            <div id="ag-hora" style="font-size:10px;color:var(--muted2);margin-top:2px">—</div>
+          </div>
+        </div>
+
+        <!-- Contacto directo: Instagram o WhatsApp, listo para copiar o abrir -->
+        <div id="ag-ig-label" style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:5px">Instagram</div>
+        <div style="display:flex;gap:8px">
+          <input id="ag-ig-input" type="text" readonly value="—"
+            onclick="this.select()"
+            style="flex:1;min-width:0;background:var(--s2);border:1.5px solid var(--border2);border-radius:9px;color:var(--text);padding:11px 13px;font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;outline:none;cursor:text">
+          <button onclick="copiarIgGanador()" title="Copiar" style="background:var(--gold);color:#07070d;border:none;border-radius:9px;padding:0 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">📋 Copiar</button>
+          <button id="ag-abrir" onclick="abrirIgGanador()" title="Abrir perfil" style="background:var(--s3);color:var(--text);border:1px solid var(--border2);border-radius:9px;padding:0 12px;font-size:14px;cursor:pointer;white-space:nowrap">↗</button>
+        </div>
+        <div id="ag-nota" style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5"></div>
+
+        <!-- Mensaje listo para enviar -->
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,200,66,.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2)">✉️ Mensaje para el ganador</div>
+            <button onclick="copiarMensajeGanador()" style="background:var(--gold);color:#07070d;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">📋 Copiar mensaje</button>
+          </div>
+          <textarea id="ag-mensaje" rows="9"
+            style="width:100%;background:var(--s2);border:1.5px solid var(--border2);border-radius:9px;color:var(--text);padding:10px 12px;font-size:12px;line-height:1.55;font-family:'Outfit',sans-serif;outline:none;resize:vertical;box-sizing:border-box"></textarea>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4">Se arma solo con la carta, el monto y el nombre del ganador. Edítalo si quieres antes de copiar. Recuerda pegar tus datos de transferencia.</div>
+        </div>
+
+        <!-- Contactos de respaldo: 2° y 3° lugar -->
+        <div id="ag-top23" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,200,66,.2)">
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px">🥈 Respaldo si el 1° no paga</div>
+          <div id="ag-top23-lista"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- AVISO REINGRESO -->
     <div class="aviso-reingreso" style="background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.2);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:11px;color:var(--muted2);line-height:1.6;text-align:center">
       🔒 Tu identidad está verificada con Google. Puedes cerrar y volver cuando quieras: tus pujas siguen asociadas a tu cuenta.
-    </div>
-
-    <!-- CONTACTO DEL GANADOR (solo admin) -->
-    <div id="admin-ganador-box" style="display:none;background:linear-gradient(135deg,rgba(245,200,66,.1),rgba(245,200,66,.02));border:1.5px solid var(--gold);border-radius:14px;padding:16px 18px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap">
-        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">🏆 Contactar al ganador</div>
-        <div id="ag-estado" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px"></div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
-        <div style="min-width:0;flex:1">
-          <div id="ag-nombre" style="font-size:15px;font-weight:700">—</div>
-          <div id="ag-email" style="font-size:11px;color:var(--muted2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--gold)" id="ag-monto">$0</div>
-          <div id="ag-hora" style="font-size:10px;color:var(--muted2);margin-top:2px">—</div>
-        </div>
-      </div>
-
-      <div id="ag-ig-label" style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:5px">Instagram</div>
-      <div style="display:flex;gap:8px">
-        <input id="ag-ig-input" type="text" readonly value="—"
-          onclick="this.select()"
-          style="flex:1;min-width:0;background:var(--s2);border:1.5px solid var(--border2);border-radius:9px;color:var(--text);padding:11px 13px;font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;outline:none;cursor:text">
-        <button onclick="copiarIgGanador()" title="Copiar" style="background:var(--gold);color:#07070d;border:none;border-radius:9px;padding:0 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">📋 Copiar</button>
-        <button id="ag-abrir" onclick="abrirIgGanador()" title="Abrir perfil" style="background:var(--s3);color:var(--text);border:1px solid var(--border2);border-radius:9px;padding:0 12px;font-size:14px;cursor:pointer;white-space:nowrap">↗</button>
-      </div>
-      <div id="ag-nota" style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5"></div>
-
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,200,66,.2)">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2)">✉️ Mensaje para el ganador</div>
-          <button onclick="copiarMensajeGanador()" style="background:var(--gold);color:#07070d;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">📋 Copiar mensaje</button>
-        </div>
-        <textarea id="ag-mensaje" rows="9"
-          style="width:100%;background:var(--s2);border:1.5px solid var(--border2);border-radius:9px;color:var(--text);padding:10px 12px;font-size:12px;line-height:1.55;font-family:'Outfit',sans-serif;outline:none;resize:vertical;box-sizing:border-box"></textarea>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4">Se arma solo con la carta, el monto y el nombre del ganador. Edítalo si quieres antes de copiar. Recuerda pegar tus datos de transferencia.</div>
-      </div>
-
-      <!-- Generar historia de Instagram -->
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,200,66,.2)">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2)">📲 Historia para Instagram</div>
-          <div style="display:flex;gap:6px">
-            <label style="font-size:10px;color:var(--muted2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="ag-historia-anon" style="cursor:pointer">Anónimo</label>
-            <button onclick="generarHistoriaGanador()" style="background:var(--gold);color:#07070d;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">🖼 Generar</button>
-          </div>
-        </div>
-        <div style="font-size:10px;color:var(--muted);line-height:1.4">Crea una imagen 1080×1920 con la carta, el ganador y el monto, lista para tu historia. Marca "Anónimo" para ocultar el nombre.</div>
-        <div id="ag-historia-preview" style="display:none;margin-top:10px;text-align:center"></div>
-      </div>
-
-      <!-- Contactos de respaldo: 2° y 3° lugar -->
-      <div id="ag-top23" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,200,66,.2)">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px">🥈 Respaldo si el 1° no paga</div>
-        <div id="ag-top23-lista"></div>
-      </div>
-    </div>
-
-    <!-- WINNER -->
-    <div class="winner-wrap" id="winner-wrap">
-      <div class="winner-trophy">🏆</div>
-      <div class="winner-title">¡SUBASTA FINALIZADA!</div>
-      <img id="w-carta-img" src="" alt="" style="display:none;max-width:150px;max-height:210px;border-radius:12px;margin:0 auto 12px;box-shadow:0 8px 30px rgba(0,0,0,.5)">
-      <div class="winner-name" id="w-name">—</div>
-      <div class="winner-ig" id="w-ig">—</div>
-      <div class="winner-price" id="w-price">$0</div>
-      <div class="winner-ts" id="w-ts">—</div>
-      <div class="winner-msg" id="w-msg"></div>
     </div>
 
     <!-- GALERÍA CARTA -->
@@ -2114,9 +2136,6 @@ body.express-tema #login-live-panel{
       </div>
 
       <div class="sep"></div>
-      <div class="section-label">Políticas (mensaje a quien gane)</div>
-      <textarea class="policies-area" id="a-policies" placeholder="Ej: Tienes 1 hora para coordinar el pago con @paldea.games..."></textarea>
-
       <div class="admin-btns">
         <button class="a-btn go" onclick="adminStart()">▶ INICIAR</button>
         <button class="a-btn" onclick="adminUpdate()">💾 Guardar</button>
@@ -3887,9 +3906,16 @@ function copiarContacto(txt){
 }
 
 function contactoGanador(){
-  const g = P.ganadorConfirmado;
-  if(g && g.whatsapp) return { valor:g.whatsapp, tipo:"wa" };
-  const ig = (g && g.ig) || (S.lider && S.lider.ig) || "";
+  // El contacto se registra AL INGRESAR (obligatorio): se lee del visitante,
+  // igual que lo que muestra el cuadro. ganadorConfirmado queda como respaldo
+  // de datos antiguos. Si no hay nada, se usa el dato de la puja.
+  if(!S.lider) return { valor:"", tipo:"ig" };
+  const info = contactoDe(S.lider.uid);
+  const gRaw = P.ganadorConfirmado;
+  const g = (gRaw && gRaw.uid && S.lider.uid && gRaw.uid === S.lider.uid) ? gRaw : null;
+  const wa = (info && info.whatsapp) || (g && g.whatsapp) || "";
+  if(wa) return { valor:wa, tipo:"wa" };
+  const ig = (info && info.ig) || (g && g.ig) || S.lider.ig || "";
   return { valor:ig, tipo:"ig" };
 }
 
@@ -4062,127 +4088,6 @@ function copiarMensajeGanador(){
   navigator.clipboard.writeText(ta.value)
     .then(()=> toast("✅ Mensaje copiado — pégalo en Instagram o WhatsApp","ok"))
     .catch(()=>{ document.execCommand("copy"); toast("✅ Mensaje copiado","ok"); });
-}
-
-// Genera una imagen 1080×1920 (formato historia IG) con la carta ganada,
-// el nombre del ganador (o "Anónimo" si está marcado) y el monto. Se dibuja
-// en canvas y se ofrece descargar. La carta puede fallar por CORS: se avisa
-// y se genera solo con texto.
-function generarHistoriaGanador(){
-  if(!S.lider){ toast("No hay ganador todavía","warn"); return; }
-  const anon = !!(document.getElementById("ag-historia-anon") && document.getElementById("ag-historia-anon").checked);
-  const W = 1080, H = 1920;
-  const canvas = document.createElement("canvas");
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext("2d");
-
-  const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "#0d0d16");
-  g.addColorStop(0.5, "#14141f");
-  g.addColorStop(1, "#07070d");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, W, H);
-
-  ctx.strokeStyle = "rgba(245,200,66,.35)";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(30, 30, W-60, H-60);
-
-  const dibujarTexto = () => {
-    ctx.textAlign = "center";
-
-    ctx.fillStyle = "#f5c842";
-    ctx.font = "bold 46px Outfit, sans-serif";
-    ctx.fillText("PALDEA GAMES", W/2, 150);
-
-    ctx.fillStyle = "#f5c842";
-    ctx.font = "bold 120px 'Bebas Neue', Impact, sans-serif";
-    ctx.fillText("¡VENDIDA!", W/2, 300);
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 52px Outfit, sans-serif";
-    wrapCanvasText(ctx, S.carta.titulo || "Carta", W/2, 1300, W-160, 62);
-
-    if(S.carta.set){
-      ctx.fillStyle = "#9a9ab0";
-      ctx.font = "38px Outfit, sans-serif";
-      ctx.fillText(S.carta.set, W/2, 1380);
-    }
-
-    ctx.fillStyle = "#9a9ab0";
-    ctx.font = "36px Outfit, sans-serif";
-    ctx.fillText("GANADOR", W/2, 1520);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 64px Outfit, sans-serif";
-    const nombreMostrado = anon ? "Anónimo" : (S.lider.nombre || "—");
-    ctx.fillText(nombreMostrado, W/2, 1590);
-
-    ctx.fillStyle = "#f5c842";
-    ctx.font = "bold 96px 'JetBrains Mono', monospace";
-    ctx.fillText(fmtCLP(S.lider.monto), W/2, 1720);
-
-    ctx.fillStyle = "#6a6a80";
-    ctx.font = "34px Outfit, sans-serif";
-    ctx.fillText("@paldea.games", W/2, 1840);
-
-    finalizarHistoria(canvas);
-  };
-
-  const imgs = (S.carta && S.carta.imgs) || [];
-  if(imgs.length > 0){
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const maxW = 620, maxH = 860;
-      let dw = img.width || maxW, dh = img.height || maxH;
-      const escala = Math.min(maxW/dw, maxH/dh);
-      dw = dw*escala; dh = dh*escala;
-      const dx = (W-dw)/2, dy = 380;
-      ctx.save();
-      ctx.shadowColor = "rgba(0,0,0,.6)";
-      ctx.shadowBlur = 40;
-      try{ ctx.drawImage(img, dx, dy, dw, dh); }catch(e){}
-      ctx.restore();
-      dibujarTexto();
-    };
-    img.onerror = () => {
-      toast("No se pudo cargar la carta en la imagen (CORS). Se generó solo con texto.","warn");
-      dibujarTexto();
-    };
-    img.src = imgs[0];
-  } else {
-    dibujarTexto();
-  }
-}
-
-function wrapCanvasText(ctx, texto, x, y, maxW, lineH){
-  const palabras = (texto||"").split(" ");
-  let linea = "", yy = y;
-  for(let n = 0; n < palabras.length; n++){
-    const test = linea + palabras[n] + " ";
-    if(ctx.measureText(test).width > maxW && n > 0){
-      ctx.fillText(linea.trim(), x, yy);
-      linea = palabras[n] + " ";
-      yy += lineH;
-    } else { linea = test; }
-  }
-  ctx.fillText(linea.trim(), x, yy);
-}
-
-function finalizarHistoria(canvas){
-  const prev = document.getElementById("ag-historia-preview");
-  try{
-    const url = canvas.toDataURL("image/png");
-    if(prev){
-      prev.style.display = "block";
-      prev.innerHTML = `
-        <img src="${url}" style="max-width:160px;border-radius:10px;border:1px solid var(--border2);margin-bottom:8px">
-        <div><a href="${url}" download="paldea-ganador.png" style="display:inline-block;background:var(--gold);color:#07070d;text-decoration:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif">⬇ Descargar imagen</a></div>`;
-    }
-    toast("✅ Historia generada — descárgala y súbela a Instagram","ok");
-  }catch(e){
-    console.error("historia:", e);
-    toast("No se pudo generar la imagen (CORS bloqueó la exportación)","err");
-  }
 }
 
 function reabrirModalGanador(){
@@ -5104,7 +5009,6 @@ function fillAdminFields(){
   document.getElementById("a-inc").value      = S.subasta.inc;
   const expEl = document.getElementById("a-express");
   if(expEl){ expEl.checked = !!S.subasta.express; toggleExpressUI(); }
-  document.getElementById("a-policies").value = S.policies||"";
   document.getElementById("a-antisnipe-add").value = S.subasta.antisnipeAgrega||5;
   // código de acceso desactivado
   const iniProg = S.subasta.inicioProgTs || S.subasta.inicioTs;
@@ -5210,7 +5114,6 @@ function leerFormulario(){
   const inc  = parseInt(document.getElementById("a-inc").value);
   if(base>0) S.subasta.base = base;
   if(inc>0)  S.subasta.inc  = inc;
-  S.policies = document.getElementById("a-policies").value;
   // código de acceso desactivado
   const asa = parseInt(document.getElementById("a-antisnipe-add").value);
   if(asa>0) S.subasta.antisnipeAgrega = asa;
@@ -7149,7 +7052,6 @@ window.confirmarRectificacion = confirmarRectificacion;
 window.cerrarRectificacion    = cerrarRectificacion;
 window.setStrike       = setStrike;
 window.quitarDeAgenda  = quitarDeAgenda;
-window.generarHistoriaGanador = generarHistoriaGanador;
 window.reabrirModalGanador = reabrirModalGanador;
 window.cerrarGracias   = cerrarGracias;
 window.recalcDuracion  = recalcDuracion;
